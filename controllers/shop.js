@@ -60,3 +60,24 @@ exports.getProduct = (req,res,next)=>{
     })
   });
 }
+
+exports.getCart = (req,res,next) => {
+  Cart.getCart(cart => {                                      //gets items in cart
+    Product.fetchAll(products => {                            //gets all products
+      const cartProducts =[];
+      for(product of products){
+        const cartProductData = cart.products.find(           //checks cart products witl all products 
+          prod => prod.id === product.id
+        );
+        if(cartProductData){
+          cartProducts.push({ productData:product, qty: cartProductData.qty})         //adds data to be displayed in cart
+        }
+      }
+      res.render('shop/cart',{
+        path:'/cart',
+        pageTitle:'Your Cart',
+        products:cartProducts
+      });
+    })
+  })
+}
